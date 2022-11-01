@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Memory Puzzle</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h1 id="title" class="title">Memory Puzzle</h1>
+        <div class="block">
+            <canvas id="canvas" tabindex="0" style="outline: none;"></canvas>
+        </div>
+        <table class="table is-narrow">
+            <tbody>
+            <tr>
+                <th>←↑→↓</th>
+                <th>Move</th>
+            </tr>
+            <tr>
+                <th>Shift</th>
+                <th>Swap</th>
+            </tr>
+            <tr>
+                <th>Z</th>
+                <th>Undo</th>
+            </tr>
+            <tr>
+                <th>X</th>
+                <th>Redo</th>
+            </tr>
+            <tr>
+                <th>R</th>
+                <th>Reset</th>
+            </tr>
+            </tbody>
+        </table>
+        <details id="edit">
+            <summary>Edit</summary>
+            <div class="field">
+                <label for="data-title" class="label">Title</label>
+                <div class="control">
+                    <input id="data-title" type="text" class="input">
+                </div>
+            </div>
+            <div class="field">
+                <label for="data-map" class="label">Map</label>
+                <div class="control">
+                    <textarea id="data-map" class="textarea"
+                              style="font-family: 'Lucida Console', Courier, monospace;"></textarea>
+                </div>
+            </div>
+            <div class="field">
+                <label for="data-memory" class="label">Memory</label>
+                <div class="control">
+                    <textarea id="data-memory" class="textarea"
+                              style="font-family: 'Lucida Console', Courier, monospace;"></textarea>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button id="apply" class="button">Apply</button>
+                </div>
+            </div>
+        </details>
+    </div>
+</section>
+<script src="main.js"></script>
+</body>
+</html>
