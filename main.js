@@ -177,8 +177,8 @@ const main = () => {
             }
         }
         if (e.code === 'KeyR') {
-            stateHistory.length = 1;
-            stateHistoryIndex = 0;
+            const [map, memory] = stateHistory[0];
+            updateState(map, memory);
         }
     });
 
