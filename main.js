@@ -161,7 +161,7 @@ const main = () => {
         if (e.code === 'ArrowDown') {
             movePlayer(1, 0);
         }
-        if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'Space') {
             if (canSwap()) {
                 swap();
             }
