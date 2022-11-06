@@ -264,7 +264,7 @@ const main = () => {
                 }
 
                 if (cell === Cell.SLEEPING_PLAYER) {
-                    ctx.fillStyle = '#8080a0';
+                    ctx.fillStyle = '#80a0a0';
                     ctx.beginPath();
                     ctx.arc((x + 1 / 2) * D, (y + 1 / 2) * D, D / 2, 0, 2 * Math.PI);
                     ctx.fill();
@@ -313,6 +313,27 @@ const main = () => {
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(cell, (mapX + 1 / 2) * D, (mapY + 1 / 2) * D);
+                }
+            }
+        }
+
+        if (canSwapFlag) {
+            for (const [memoryY, row] of memory.entries()) {
+                for (const [memoryX, cell] of row.entries()) {
+                    const mapY = mapPlayerY + (memoryY - memoryPlayerY);
+                    const mapX = mapPlayerX + (memoryX - memoryPlayerX);
+
+                    if (cell !== Cell.NONE && cell !== Cell.PLAYER && map[mapY][mapX] === Cell.SLEEPING_PLAYER) {
+                        ctx.strokeStyle = '#00ffff';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(mapX * D, mapY * D, D, D);
+
+                        ctx.fillStyle = '#00ffff';
+                        ctx.font = '32px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(cell, (mapX + 1 / 2) * D, (mapY + 1 / 2) * D);
+                    }
                 }
             }
         }
