@@ -305,13 +305,13 @@ const main = () => {
                     ctx.lineCap = 'round';
 
                     ctx.beginPath();
-                    ctx.moveTo(x * D + 1, y * D + 1);
-                    ctx.lineTo((x + 1) * D - 1, (y + 1) * D - 1);
+                    ctx.moveTo(x * D + 2, y * D + 2);
+                    ctx.lineTo((x + 1) * D - 2, (y + 1) * D - 2);
                     ctx.stroke();
 
                     ctx.beginPath();
-                    ctx.moveTo((x + 1) * D - 1, y * D + 1);
-                    ctx.lineTo(x * D + 1, (y + 1) * D - 1);
+                    ctx.moveTo((x + 1) * D - 2, y * D + 2);
+                    ctx.lineTo(x * D + 2, (y + 1) * D - 2);
                     ctx.stroke();
                 }
             }
