@@ -8,6 +8,9 @@ const main = () => {
         PLAYER: 'P',
         SLEEPING_PLAYER: 'Q',
         GOAL: 'G',
+        KEY: 'K',
+        LOCK: 'L',
+        X: 'X',
     };
 
     const canvas = document.getElementById('canvas');
@@ -155,10 +158,19 @@ const main = () => {
         const [mapPlayerY, mapPlayerX] = getPlayerPosition(map);
         const [memoryPlayerY, memoryPlayerX] = getPlayerPosition(memory);
 
-        return (mapPlayerY >= memoryPlayerY) &&
-            (mapH - mapPlayerY >= memoryH - memoryPlayerY) &&
-            (mapPlayerX >= memoryPlayerX) &&
-            (mapW - mapPlayerX >= memoryW - memoryPlayerX);
+        for (const [memoryY, row] of memory.entries()) {
+            for (const [memoryX, cell] of row.entries()) {
+                if (cell !== Cell.NONE && cell !== Cell.PLAYER) {
+                    const mapY = mapPlayerY + (memoryY - memoryPlayerY);
+                    const mapX = mapPlayerX + (memoryX - memoryPlayerX);
+                    if (!((0 <= mapY) && (mapY < mapH) && (0 <= mapX) && (mapX < mapW)) || (map[mapY][mapX] === Cell.X)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     const swap = () => {
@@ -282,6 +294,25 @@ const main = () => {
                     ctx.lineTo((x + 1) * D, (y + 1 / 2) * D);
                     ctx.lineTo((x + 1 / 2) * D, (y + 1) * D);
                     ctx.fill();
+                }
+
+                if (cell === Cell.X) {
+                    ctx.fillStyle = '#808080';
+                    ctx.fillRect(x * D, y * D, D, D);
+
+                    ctx.strokeStyle = '#c00000'
+                    ctx.lineWidth = 2;
+                    ctx.lineCap = 'round';
+
+                    ctx.beginPath();
+                    ctx.moveTo(x * D + 1, y * D + 1);
+                    ctx.lineTo((x + 1) * D - 1, (y + 1) * D - 1);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo((x + 1) * D - 1, y * D + 1);
+                    ctx.lineTo(x * D + 1, (y + 1) * D - 1);
+                    ctx.stroke();
                 }
             }
         }
