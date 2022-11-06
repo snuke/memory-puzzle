@@ -6,6 +6,7 @@ const main = () => {
         EMPTY: '-',
         WALL: '#',
         PLAYER: 'P',
+        SLEEPING_PLAYER: 'Q',
         GOAL: 'G',
     };
 
@@ -72,9 +73,32 @@ const main = () => {
     canvas.height = mapH * D;
     canvas.width = mapW * D;
 
-    const updateState = (map, memory) => {
+    const updateState = (newMap, newMemory) => {
+        const [map, memory] = stateHistory[stateHistoryIndex];
+        let same = true;
+
+        for (const y of Array(mapH).keys()) {
+            for (const x of Array(mapW).keys()) {
+                if (map[y][x] !== newMap[y][x]) {
+                    same = false;
+                }
+            }
+        }
+
+        for (const y of Array(memoryH).keys()) {
+            for (const x of Array(memoryW).keys()) {
+                if (memory[y][x] !== newMemory[y][x]) {
+                    same = false;
+                }
+            }
+        }
+
+        if (same) {
+            return;
+        }
+
         stateHistory.length = stateHistoryIndex + 1;
-        stateHistory.push([map, memory]);
+        stateHistory.push([newMap, newMemory]);
         stateHistoryIndex++;
     };
 
@@ -86,6 +110,26 @@ const main = () => {
                 }
             }
         }
+    };
+
+    const getNextSleepingPlayerPosition = () => {
+        const [map, memory] = stateHistory[stateHistoryIndex];
+        const [mapPlayerY, mapPlayerX] = getPlayerPosition(map);
+        const [memoryPlayerY, memoryPlayerX] = getPlayerPosition(memory);
+
+        for (const dz of Array(memoryH * memoryW).keys()) {
+            const z = ((memoryPlayerY * memoryW + memoryPlayerX) + dz) % (memoryH * memoryW);
+            const memoryY = Math.trunc(z / memoryW);
+            const memoryX = z % memoryW;
+            const mapY = mapPlayerY + (memoryY - memoryPlayerY);
+            const mapX = mapPlayerX + (memoryX - memoryPlayerX);
+
+            if ((memory[memoryY][memoryX] !== Cell.NONE) && (map[mapY][mapX] === Cell.SLEEPING_PLAYER)) {
+                return [mapY, mapX];
+            }
+        }
+
+        return null;
     };
 
     const movePlayer = (dy, dx) => {
@@ -121,29 +165,35 @@ const main = () => {
         const [map, memory] = stateHistory[stateHistoryIndex];
         const [mapPlayerY, mapPlayerX] = getPlayerPosition(map);
         const [memoryPlayerY, memoryPlayerX] = getPlayerPosition(memory);
+        const mapSleepingPlayerPosition = getNextSleepingPlayerPosition();
 
         const newMap = map.map(row => row.slice());
         const newMemory = memory.map(row => row.slice());
-        let same = true;
 
-        for (const [memoryY, row] of memory.entries()) {
-            for (const [memoryX, cell] of row.entries()) {
-                if (cell !== Cell.NONE && cell !== Cell.PLAYER) {
-                    const mapY = mapPlayerY + (memoryY - memoryPlayerY);
-                    const mapX = mapPlayerX + (memoryX - memoryPlayerX);
+        if (mapSleepingPlayerPosition === null) {
+            for (const [memoryY, row] of memory.entries()) {
+                for (const [memoryX, cell] of row.entries()) {
+                    if (cell !== Cell.NONE && cell !== Cell.PLAYER) {
+                        const mapY = mapPlayerY + (memoryY - memoryPlayerY);
+                        const mapX = mapPlayerX + (memoryX - memoryPlayerX);
 
-                    if (map[mapY][mapX] !== memory[memoryY][memoryX]) {
                         newMap[mapY][mapX] = memory[memoryY][memoryX];
                         newMemory[memoryY][memoryX] = map[mapY][mapX];
-                        same = false;
                     }
                 }
             }
+        } else {
+            const [mapSleepingPlayerY, mapSleepingPlayerX] = mapSleepingPlayerPosition;
+            newMap[mapPlayerY][mapPlayerX] = Cell.SLEEPING_PLAYER;
+            newMap[mapSleepingPlayerY][mapSleepingPlayerX] = Cell.PLAYER;
+
+            const memorySleepingPlayerY = memoryPlayerY + (mapSleepingPlayerY - mapPlayerY);
+            const memorySleepingPlayerX = memoryPlayerX + (mapSleepingPlayerX - mapPlayerX);
+            newMemory[memoryPlayerY][memoryPlayerX] = memory[memorySleepingPlayerY][memorySleepingPlayerX];
+            newMemory[memorySleepingPlayerY][memorySleepingPlayerX] = memory[memoryPlayerY][memoryPlayerX];
         }
 
-        if (!same) {
-            updateState(newMap, newMemory);
-        }
+        updateState(newMap, newMemory);
     };
 
     canvas.addEventListener('keydown', (e) => {
@@ -213,6 +263,17 @@ const main = () => {
                     ctx.fill();
                 }
 
+                if (cell === Cell.SLEEPING_PLAYER) {
+                    ctx.fillStyle = '#8080a0';
+                    ctx.beginPath();
+                    ctx.arc((x + 1 / 2) * D, (y + 1 / 2) * D, D / 2, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#000000';
+                    ctx.fillRect((x + 5 / 32) * D, (y + 29 / 64) * D, D / 4, D * 3 / 32);
+                    ctx.fillRect((x + 19 / 32) * D, (y + 29 / 64) * D, D / 4, D * 3 / 32);
+                }
+
                 if (cell === Cell.GOAL) {
                     ctx.fillStyle = '#ffff00';
                     ctx.beginPath();
@@ -227,6 +288,7 @@ const main = () => {
 
         const [mapPlayerY, mapPlayerX] = getPlayerPosition(map);
         const [memoryPlayerY, memoryPlayerX] = getPlayerPosition(memory);
+        const canSwapFlag = canSwap();
 
         for (const [memoryY, row] of memory.entries()) {
             for (const [memoryX, cell] of row.entries()) {
@@ -234,7 +296,7 @@ const main = () => {
                 const mapX = mapPlayerX + (memoryX - memoryPlayerX);
 
                 if (cell !== Cell.NONE && cell !== Cell.PLAYER) {
-                    if (canSwap()) {
+                    if (canSwapFlag) {
                         ctx.strokeStyle = '#00c000';
                     } else {
                         ctx.strokeStyle = '#c00000';
@@ -242,7 +304,7 @@ const main = () => {
                     ctx.lineWidth = 2;
                     ctx.strokeRect(mapX * D, mapY * D, D, D);
 
-                    if (canSwap()) {
+                    if (canSwapFlag) {
                         ctx.fillStyle = '#00c000';
                     } else {
                         ctx.fillStyle = '#c00000';
