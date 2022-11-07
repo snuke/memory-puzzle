@@ -319,7 +319,7 @@ const main = () => {
 
         for (const y of Array(mapH).keys()) {
             for (const x of Array(mapW).keys()) {
-                ctx.strokeStyle = '#c0c0c0';
+                ctx.strokeStyle = '#404040';
                 ctx.lineWidth = 1;
                 ctx.strokeRect(x * D, y * D, D, D);
             }
