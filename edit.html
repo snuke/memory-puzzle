@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Memory Puzzle Editor</title>
+    <link rel="stylesheet" href="src/bulma.min.css">
+</head>
+<body class="vsc-initialized">
+<section class="section">
+    <div class="container">
+        <h1 id="title" class="title">Memory Puzzle Editor</h1>
+        <div class="block">
+            <div style="margin-bottom: 12px;">
+                <button class="button is-small" id="map-la">L+</button>
+                <button class="button is-small" id="map-ra">R+</button>
+                <button class="button is-small" id="map-ua">U+</button>
+                <button class="button is-small" id="map-da">D+</button>
+                <button class="button is-small" id="map-ld">L-</button>
+                <button class="button is-small" id="map-rd">R-</button>
+                <button class="button is-small" id="map-ud">U-</button>
+                <button class="button is-small" id="map-dd">D-</button>
+                <button class="button is-small" id="map-xa">T</button>
+                <button class="button is-small" id="map-xd">Ref</button>
+            </div>
+            <canvas id="map-canvas" tabindex="0" style="outline: none;" height="0" width="0"></canvas>
+        </div>
+        <div class="block">
+            <canvas id="chips-canvas" tabindex="0" style="outline: none;" height="0" width="0"></canvas>
+        </div>
+        <div class="block">
+            <div style="margin-bottom: 12px;">
+                <button class="button is-small" id="memory-la">L+</button>
+                <button class="button is-small" id="memory-ra">R+</button>
+                <button class="button is-small" id="memory-ua">U+</button>
+                <button class="button is-small" id="memory-da">D+</button>
+                <button class="button is-small" id="memory-ld">L-</button>
+                <button class="button is-small" id="memory-rd">R-</button>
+                <button class="button is-small" id="memory-ud">U-</button>
+                <button class="button is-small" id="memory-dd">D-</button>
+                <button class="button is-small" id="memory-xa">T</button>
+                <button class="button is-small" id="memory-xd">Ref</button>
+            </div>
+            <canvas id="memory-canvas" tabindex="0" style="outline: none;" height="0" width="0"></canvas>
+        </div>
+        <div class="field">
+            <label for="data-title" class="label">Title</label>
+            <div class="control">
+                <input id="data-title" type="text" class="input">
+            </div>
+        </div>
+        <div class="field">
+            <label for="data-creator" class="label">Creator</label>
+            <div class="control">
+                <input id="data-creator" type="text" class="input">
+            </div>
+        </div>
+        <div class="field">
+            <label for="data-map" class="label">Map</label>
+            <div class="control">
+                <textarea id="data-map" class="textarea" style="font-family: &#39;Lucida Console&#39;, Courier, monospace;"></textarea>
+            </div>
+        </div>
+        <div class="field">
+            <label for="data-memory" class="label">Memory</label>
+            <div class="control">
+                <textarea id="data-memory" class="textarea" style="font-family: &#39;Lucida Console&#39;, Courier, monospace;"></textarea>
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <button id="apply" class="button">Apply</button>
+                <button id="play" class="button is-primary">Play</button>
+
+                <button id="copy" class="button is-warning">Copy</button>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="src/common.js"></script>
+<script src="src/edit.js"></script>
+<style>
+    .is-small {
+        font-size: 16px !important;
+        padding: 0px 10px !important;
+        height: 30px !important;
+    }
+</style>
+</body></html>

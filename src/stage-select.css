@@ -1,0 +1,33 @@
+#stage-select-nav {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  min-width: 300px;
+  transition: all 300ms 0s ease, opacity 100ms 0s ease;
+  opacity: 50%;
+}
+#stage-select-nav:hover {
+  opacity: 95%;
+}
+#stage-select-nav .panel-heading {
+  white-space: nowrap;
+  font-size: 1em;
+  padding: 0.5em 1em;
+  cursor: pointer;
+}
+#stage-select-nav .panel-block {
+  background-color: #FFF;
+  display: block;
+  max-height: calc(100vh - 10px - 2.5em);
+  overflow-y: scroll !important;
+}
+#stage-select-nav.collapsed {
+  width: 8.1em;
+  min-width: 8.1em;
+}
+#stage-select-nav.collapsed .panel-heading {
+  border-radius: 6px;
+}
+#stage-select-nav.collapsed #stage-select-minus {
+  display: none;
+}

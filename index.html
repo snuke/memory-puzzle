@@ -3,13 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="Thu, 01 Dec 1994 16:00:00 GMT">
+
     <title>Memory Puzzle</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="src/bulma.min.css">
+    <script src="src/jquery-1.4.4.min.js"></script>
+
+    <script src="src/jquery.ztree.core.min.js"></script>
+    <link rel="stylesheet" href="src/zTreeStyle.css" />
+    <link rel="stylesheet" href="src/stage-select.css" />
 </head>
 <body>
-<section class="section">
+<section class="section" style="padding-top: 15px;">
     <div class="container">
-        <h1 id="title" class="title">Memory Puzzle</h1>
+        <!-- <div><img src="src/logo.png"></div> -->
+        <h1 class="title"><span id="title">Memory Puzzle</span>
+            <span id="creator" style="font-size: 50%; color: #AAA;"></span></h1>
         <div class="block">
             <canvas id="canvas" tabindex="0" style="outline: none;"></canvas>
         </div>
@@ -46,6 +57,12 @@
                 </div>
             </div>
             <div class="field">
+                <label for="data-creator" class="label">Creator</label>
+                <div class="control">
+                    <input id="data-creator" type="text" class="input">
+                </div>
+            </div>
+            <div class="field">
                 <label for="data-map" class="label">Map</label>
                 <div class="control">
                     <textarea id="data-map" class="textarea"
@@ -61,12 +78,26 @@
             </div>
             <div class="field">
                 <div class="control">
-                    <button id="apply" class="button">Apply</button>
+                    <button id="apply" class="button is-primary">Apply</button>
+                    <button id="editor" class="button">Editor</button>
+                    <button id="editor-current" class="button">Editor (current state)</button>
                 </div>
             </div>
         </details>
+
+        <nav id="stage-select-nav" class="panel is-info">
+          <p class="panel-heading">
+            Stage Select
+            <span id="stage-select-minus" class="is-pulled-right">―</span>
+          </p>
+          <div class="panel-block">
+            <div id="stage-select" class="ztree"></div>
+          </div>
+        </nav>
     </div>
 </section>
-<script src="main.js"></script>
+<script src="src/common.js"></script>
+<script src="src/main.js"></script>
+<script src="src/stage-select.js"></script>
 </body>
 </html>
