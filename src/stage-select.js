@@ -38,11 +38,13 @@ function selectStage(node) {
     } else {
         $.get(`stages/${node.path}.txt`, function(data) {
             let state = 0;
-            let title = '', creator = '', map = '', memory = '';
+            let title, creator = '', map = '', memory = '';
+            title = node.path.match(/[^/]*$/)[0];
             for (const line of data.split('\n')) {
                 if (line == '') { state++; continue;}
                 if (state == 0) {
-                    if (title) creator = line; else title = line; 
+                    if (creator) title = creator;
+                    creator = line; 
                 }
                 if (state == 1) map += line+'\n';
                 if (state == 2) memory += line+'\n';
