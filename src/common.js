@@ -7,7 +7,7 @@ const Cell = {
     PLAYER: 'P',
     SLEEPING_PLAYER: 'Q',
     GOAL: 'G',
-    X: 'X',
+    FIXED: 'X',
 };
 
 const getPlayerPosition = (a) => {
@@ -50,7 +50,7 @@ const canSwap = () => {
             if (cell !== Cell.NONE && cell !== Cell.PLAYER) {
                 const mapY = mapPlayerY + (memoryY - memoryPlayerY);
                 const mapX = mapPlayerX + (memoryX - memoryPlayerX);
-                if (!((0 <= mapY) && (mapY < mapH) && (0 <= mapX) && (mapX < mapW)) || (map[mapY][mapX] === Cell.X)) {
+                if (!((0 <= mapY) && (mapY < mapH) && (0 <= mapX) && (mapX < mapW)) || (map[mapY][mapX] === Cell.FIXED)) {
                     return false;
                 }
             }
@@ -120,15 +120,15 @@ const draw = (canvas, ctx, map, memory) => {
                 ctx.fill();
             }
 
-            if (cell === Cell.X) {
+            if (cell === Cell.FIXED) {
                 ctx.fillStyle = '#301090';
                 ctx.fillRect(x * D, y * D, D, D);
 
-                ctx.fillStyle = '#555555';
-                ctx.fillRect(x * D +   3, y * D +   3, 2, 2);
-                ctx.fillRect(x * D + D-5, y * D +   3, 2, 2);
-                ctx.fillRect(x * D +   3, y * D + D-5, 2, 2);
-                ctx.fillRect(x * D + D-5, y * D + D-5, 2, 2);
+                ctx.fillStyle = '#606060';
+                ctx.fillRect(x * D +   3, y * D +   3, 3, 3);
+                ctx.fillRect(x * D + D-6, y * D +   3, 3, 3);
+                ctx.fillRect(x * D +   3, y * D + D-6, 3, 3);
+                ctx.fillRect(x * D + D-6, y * D + D-6, 3, 3);
             }
         }
     }
