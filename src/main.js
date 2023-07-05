@@ -107,7 +107,7 @@ const movePlayer = (dy, dx) => {
     const newY = y + dy;
     const newX = x + dx;
 
-    if ((0 <= newY) && (newY < mapH) && (0 <= newX) && (newX < mapW) && ([Cell.EMPTY, Cell.GOAL].includes(map[newY][newX]))) {
+    if ((0 <= newY) && (newY < mapH) && (0 <= newX) && (newX < mapW) && ([Cell.EMPTY, Cell.GOLD].includes(map[newY][newX]))) {
         const newMap = map.map(row => row.slice());
         const newMemory = memory.map(row => row.slice());
 
@@ -204,8 +204,8 @@ const onAnimationFrame = () => {
         ctx.fillText('Click to resume', canvas.width / 2, canvas.height / 2);
     }
 
-    const map_has_goal = map.some(row => row.includes(Cell.GOAL));
-    const memory_has_goal = memory.some(row => row.includes(Cell.GOAL));
+    const map_has_goal = map.some(row => row.includes(Cell.GOLD));
+    const memory_has_goal = memory.some(row => row.includes(Cell.GOLD));
     if (!map_has_goal && !memory_has_goal) {
         if (!cleared) {
             cleared = true;

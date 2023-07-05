@@ -6,7 +6,7 @@ const Cell = {
     WALL: '#',
     PLAYER: 'P',
     SLEEPING_PLAYER: 'Q',
-    GOAL: 'G',
+    GOLD: 'G',
     FIXED: 'X',
 };
 
@@ -111,7 +111,7 @@ const draw = (canvas, ctx, map, memory) => {
                 ctx.fillRect((x + 19 / 32) * D, (y + 29 / 64) * D, D / 4, D * 3 / 32);
             }
 
-            if (cell === Cell.GOAL) {
+            if (cell === Cell.GOLD) {
                 ctx.fillStyle = '#ffff00';
                 ctx.beginPath();
                 ctx.moveTo(x * D, (y + 1 / 2) * D);
