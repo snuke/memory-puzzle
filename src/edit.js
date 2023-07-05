@@ -15,11 +15,10 @@ const chipsCtx = chipsCanvas.getContext('2d');
 chipsCanvas.height = chips.length * D;
 chipsCanvas.width = chips[0].length * D;
 
-let data;
 {
     const url = new URL(location.href);
-    const dataParam = url.searchParams.get('data');
-    data = JSON.parse(decodeURIComponent(dataParam));
+    let data = url.searchParams.get('data');
+    data = JSON.parse(decodeURIComponent(data));
     if (data === null) {
         data = {
             'title': 'Memory Puzzle',
@@ -28,17 +27,17 @@ let data;
             'memory': '.....\n..#..\n..P..\n.....\n.....',
         }
     }
+    let title = data['title'] || '';
+    let creator = data['creator'] || '';
+    let mapStr = data['map'] || '';
+    let memoryStr = data['memory'] || '';
+    let comment = data['comment'] || '';
+    document.getElementById('data-title').value = title;
+    document.getElementById('data-creator').value = creator;
+    document.getElementById('data-comment').value = comment;
+    setStateFromStr(mapStr, memoryStr);
+    updateData();
 }
-let title = data['title'] || '';
-let creator = data['creator'] || '';
-let mapStr = data['map'] || '';
-let memoryStr = data['memory'] || '';
-let comment = data['comment'] || '';
-document.getElementById('data-title').value = title;
-document.getElementById('data-creator').value = creator;
-document.getElementById('data-comment').value = comment;
-setStateFromStr(mapStr, memoryStr);
-updateData();
 
 function addHistory() {
     stateHistory.length = stateHistoryIndex + 1;
@@ -54,9 +53,9 @@ function setStateFromStr(mapStr, memoryStr) {
     addHistory();
 }
 
-function toStr(data) {
+function toStr(arr) {
     a = []
-    for (var i = 0; i < data.length; i++) a.push(data[i].join(''));
+    for (var i = 0; i < arr.length; i++) a.push(arr[i].join(''));
     return a.join('\n');
 }
 function updateData() {
@@ -119,7 +118,7 @@ function setDrawEvent(canvas, isMap) {
         const py = e.clientY - rect.top;
         const i = Math.trunc(py/D);
         const j = Math.trunc(px/D);
-        if (isMap) data = map; else data = memory;
+        const data = isMap?map:memory;
         if (!c) {
             c = chips[0][chipIndex];
             if (data[i][j] === c) c = isMap?'-':'.'
@@ -158,7 +157,7 @@ for (var m of ['map','memory']) {
                         if (dir == 'l' || dir == 'r') if (w <= 1) return;
                     }
                     _ = chips[0][chipIndex];
-                    data = (m == 'map')?map:memory;
+                    const data = (m == 'map')?map:memory;
                     switch (dir+op) {
                         case 'la': data.forEach((row) => { row.unshift(_);}); break;
                         case 'ra': data.forEach((row) => { row.push(_);}); break;

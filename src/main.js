@@ -2,34 +2,13 @@ const canvas = document.getElementById('canvas');
 canvas.focus();
 const ctx = canvas.getContext('2d');
 
-let data;
-{
-    const url = new URL(location.href);
-    const dataParam = url.searchParams.get('data');
-    data = JSON.parse(dataParam);
-    if (data === null) {
-        data = {
-            'title': '',
-            'creator': '',
-            'map': '---\n-P-\n---G',
-            'memory': 'P',
-        }
-    }
-
-    if (url.searchParams.get('edit') === 'true') {
-        document.getElementById('edit').open = true;
-    }
-    url.searchParams.delete('edit');
-    history.replaceState(null, '', url.href);
-}
-
 let title, creator, mapStr, memoryStr, comment;
 let clearFunc, cleared;
+let initialData;
 let initialMap, mapH, mapW;
 let initialMemory, memoryH, memoryW;
 let stateHistory, stateHistoryIndex;
-const setStage = (stageData) => {
-    data = stageData;
+const setStage = (data) => {
     title = data['title'] || '';
     creator = data['creator'] || '';
     mapStr = data['map'] || '';
@@ -82,7 +61,28 @@ const setStage = (stageData) => {
     stateHistory = [[initialMap, initialMemory]];
     stateHistoryIndex = 0;
 };
-setStage(data);
+
+{
+    const url = new URL(location.href);
+    let data = url.searchParams.get('data');
+    data = JSON.parse(data);
+    if (data === null) {
+        data = {
+            'title': '',
+            'creator': '',
+            'map': '---\n-P-\n---G',
+            'memory': 'P',
+        }
+    }
+
+    if (url.searchParams.get('edit') === 'true') {
+        document.getElementById('edit').open = true;
+    }
+    url.searchParams.delete('edit');
+    history.replaceState(null, '', url.href);
+    initialData = data;
+    setStage(data);
+}
 
 function updateTextarea() {
     const [map, memory] = stateHistory[stateHistoryIndex];
@@ -276,7 +276,7 @@ document.getElementById('apply').addEventListener('click', () => {
 
 document.getElementById('editor').addEventListener('click', () => {
     const url = new URL('edit.html', location.href);
-    url.searchParams.set('data', JSON.stringify(data));
+    url.searchParams.set('data', JSON.stringify(initialData));
     open(url.href, '_blank');
 });
 document.getElementById('editor-current').addEventListener('click', () => {
