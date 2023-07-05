@@ -31,3 +31,15 @@
 #stage-select-nav.collapsed #stage-select-minus {
   display: none;
 }
+
+#total-score {
+  font-family: courier;
+  font-size: 14px;
+  color: #888;
+  text-align: right;
+}
+#total-score span {
+  padding: 0 5px;
+  font-weight: bold;
+  color: #444;
+}

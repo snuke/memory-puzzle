@@ -31,12 +31,14 @@ const SOLVED_CLOSE_ICON = 'src/img/diy/close2.png';
 
 
 let tree;
+let totalScore = 0;
 function selectStage(node) {
     if (node.isParent) {
         tree.expandNode(node);
         return false;
     } else {
-        $.get(`stages/${node.path}.txt`, function(data) {
+        const hash = Math.floor(Math.random()*1e9);
+        $.get(`stages/${node.path}.txt?h=${hash}`, function(data) {
             let state = 0;
             let title, creator = '', map = '', memory = '';
             title = node.path.match(/[^/]*$/)[0];
@@ -67,6 +69,8 @@ function updateSolved(path) {
     if (node === null) return;
     if (node.solved) return;
     node.solved = true;
+    totalScore += node.score;
+    $('#total-score span').text(totalScore);
     node.icon = SOLVED_FILE_ICON;
     tree.updateNode(node);
     while (node.parentTId !== null) {
@@ -107,6 +111,11 @@ $.get('stages/index.txt', function(data) {
     for (let line of data.split('\n')) {
         line = line.trim();
         if (line === '') continue;
+        let score = 0;
+        if (line.includes(':')) {
+            [score,line] = line.split(':');
+            score = parseInt(score);
+        }
         let pid = 0, path = '';
         for (const s of line.split('/')) {
             path += s;
@@ -118,6 +127,7 @@ $.get('stages/index.txt', function(data) {
             }
             pid = id; path += '/';
         }
+        zNodes[pid-1]['score'] = score;
     }
     tree = $.fn.zTree.init($("#stage-select"), setting, zNodes);
     for (const node of tree.getNodes()) {
