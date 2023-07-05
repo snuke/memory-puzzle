@@ -18,6 +18,7 @@ const getPlayerPosition = (a) => {
             }
         }
     }
+    return [0,0];
 };
 
 const getNextSleepingPlayerPosition = () => {

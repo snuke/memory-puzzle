@@ -192,7 +192,7 @@ document.getElementById('play').addEventListener('click', () => {
         'memory': memoryStr,
     };
     const url = new URL('/', location.href);
-    url.searchParams.set('data', encodeURIComponent(JSON.stringify(data)));
+    url.searchParams.set('data', JSON.stringify(data));
     open(url.href, '_blank');
 });
 document.getElementById('apply').addEventListener('click', () => {
