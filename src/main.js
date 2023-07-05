@@ -35,6 +35,8 @@ const setStage = (stageData) => {
     mapStr = data['map'] || '';
     memoryStr = data['memory'] || '';
     comment = data['comment'] || '';
+    const score = data['score'] || 0;
+    const solved = data['solved'] || false;
     clearFunc = data['clearFunc']; cleared = false;
 
     document.getElementById('data-title').value = title;
@@ -51,6 +53,20 @@ const setStage = (stageData) => {
         document.getElementById('comment').classList.remove('is-hidden');
     } else {
         document.getElementById('comment').classList.add('is-hidden');
+    }
+    if (score) {
+        const scoreDom = document.getElementById('score');
+        scoreDom.textContent = score+' pt';
+        scoreDom.classList.remove('is-hidden');
+        if (solved) {
+            scoreDom.classList.remove('is-dark');
+            scoreDom.classList.add('is-success');
+        } else {
+            scoreDom.classList.remove('is-success');
+            scoreDom.classList.add('is-dark');
+        }
+    } else {
+        document.getElementById('score').classList.add('is-hidden');
     }
 
     initialMap = mapStr.split('\n').filter(s => s !== '').map(s => [...s]);
@@ -218,6 +234,8 @@ const onAnimationFrame = () => {
         if (!cleared) {
             cleared = true;
             if (clearFunc !== void 0) clearFunc();
+            document.getElementById('score').classList.remove('is-dark');
+            document.getElementById('score').classList.add('is-success');
         }
         if (document.activeElement === canvas) {
             ctx.fillStyle = '#000000c0';

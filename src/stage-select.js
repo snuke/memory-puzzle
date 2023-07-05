@@ -59,7 +59,17 @@ function selectStage(node) {
                 setLS(SOLVED_KEY, setToArray(solved));
                 updateSolved(node.path);
             };
-            setStage({title:title, creator:creator, map:map, memory:memory, comment:comment, clearFunc:clearFunc});
+            const stageData = {
+                title:title,
+                creator:creator,
+                map:map,
+                memory:memory,
+                comment:comment,
+                score:node.score,
+                solved:node.solved,
+                clearFunc:clearFunc
+            };
+            setStage(stageData);
             history.pushState('','',`?stage=${encodeURIComponent(node.path)}`);
         });
         return true;
