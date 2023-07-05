@@ -134,8 +134,8 @@ const draw = (canvas, ctx, map, memory) => {
         }
     }
 
-    for (const y of Array(mapH).keys()) {
-        for (const x of Array(mapW).keys()) {
+    for (const [y, row] of map.entries()) {
+        for (const [x, cell] of row.entries()) {
             ctx.strokeStyle = '#60606080';
             ctx.lineWidth = 1;
             ctx.strokeRect(x * D, y * D, D, D);
