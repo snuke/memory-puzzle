@@ -23,7 +23,7 @@ let data;
     if (data === null) {
         data = {
             'title': 'Memory Puzzle',
-            'creator': 'sugim48',
+            'creator': 'sugim',
             'map': '----G----\n'+'---------\n'.repeat(7)+'----P----',
             'memory': '.....\n..#..\n..P..\n.....\n.....',
         }
@@ -33,8 +33,10 @@ let title = data['title'] || '';
 let creator = data['creator'] || '';
 let mapStr = data['map'] || '';
 let memoryStr = data['memory'] || '';
+let comment = data['comment'] || '';
 document.getElementById('data-title').value = title;
 document.getElementById('data-creator').value = creator;
+document.getElementById('data-comment').value = comment;
 setStateFromStr(mapStr, memoryStr);
 updateData();
 
@@ -84,6 +86,7 @@ document.addEventListener('keydown', (e) => {
     if (activeElm == document.getElementById('data-creator')) return true;
     if (activeElm == document.getElementById('data-map')) return true;
     if (activeElm == document.getElementById('data-memory')) return true;
+    if (activeElm == document.getElementById('data-comment')) return true;
 
     if (e.code === 'KeyZ') {
         if (stateHistoryIndex - 1 >= 0) {
@@ -185,11 +188,13 @@ document.getElementById('play').addEventListener('click', () => {
     const creator = document.getElementById('data-creator').value;
     const mapStr = document.getElementById('data-map').value;
     const memoryStr = document.getElementById('data-memory').value;
+    const comment = document.getElementById('data-comment').value;
     const data = {
         'title': title,
         'creator': creator,
         'map': mapStr,
         'memory': memoryStr,
+        'comment': comment,
     };
     const url = new URL('/', location.href);
     url.searchParams.set('data', JSON.stringify(data));
@@ -207,8 +212,10 @@ document.getElementById('copy').addEventListener('click', () => {
     const creator = document.getElementById('data-creator').value.trim();
     const mapStr = document.getElementById('data-map').value.trim();
     const memoryStr = document.getElementById('data-memory').value.trim();
+    const comment = document.getElementById('data-comment').value.trim();
     let s = `${title}\n`;
     if (creator) s += `${creator}\n`;
     s += `\n${mapStr}\n\n${memoryStr}\n`;
+    if (comment) s += `\n${comment}\n`;
     navigator.clipboard.writeText(s);
 });

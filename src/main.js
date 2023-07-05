@@ -23,7 +23,7 @@ let data;
     history.replaceState(null, '', url.href);
 }
 
-let title, creator, mapStr, memoryStr;
+let title, creator, mapStr, memoryStr, comment;
 let clearFunc, cleared;
 let initialMap, mapH, mapW;
 let initialMemory, memoryH, memoryW;
@@ -34,16 +34,24 @@ const setStage = (stageData) => {
     creator = data['creator'] || '';
     mapStr = data['map'] || '';
     memoryStr = data['memory'] || '';
+    comment = data['comment'] || '';
     clearFunc = data['clearFunc']; cleared = false;
 
     document.getElementById('data-title').value = title;
     document.getElementById('data-creator').value = creator;
     document.getElementById('data-map').value = mapStr;
     document.getElementById('data-memory').value = memoryStr;
+    document.getElementById('data-comment').value = comment;
 
     document.title = `${title} - Memory Puzzle`;
     document.getElementById('title').textContent = title;
     document.getElementById('creator').textContent = creator?'by '+creator:'';
+    if (comment) {
+        document.getElementById('comment').textContent = comment;
+        document.getElementById('comment').classList.remove('is-hidden');
+    } else {
+        document.getElementById('comment').classList.add('is-hidden');
+    }
 
     initialMap = mapStr.split('\n').filter(s => s !== '').map(s => [...s]);
     mapH = initialMap.length;
@@ -232,12 +240,14 @@ document.getElementById('apply').addEventListener('click', () => {
     const creator = document.getElementById('data-creator').value;
     const mapStr = document.getElementById('data-map').value;
     const memoryStr = document.getElementById('data-memory').value;
+    const comment = document.getElementById('data-comment').value;
 
     const data = {
         'title': title,
         'creator': creator,
         'map': mapStr,
         'memory': memoryStr,
+        'comment': comment,
     };
 
     const url = new URL('/', location.href);
@@ -258,6 +268,7 @@ document.getElementById('editor-current').addEventListener('click', () => {
         'creator': document.getElementById('data-creator').value,
         'map': document.getElementById('data-map').value,
         'memory': document.getElementById('data-memory').value,
+        'comment': document.getElementById('data-comment').value,
     };
     url.searchParams.set('data', JSON.stringify(currentData));
     open(url.href, '_blank');

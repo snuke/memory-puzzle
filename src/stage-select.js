@@ -40,7 +40,7 @@ function selectStage(node) {
         const hash = Math.floor(Math.random()*1e9);
         $.get(`stages/${node.path}.txt?h=${hash}`, function(data) {
             let state = 0;
-            let title, creator = '', map = '', memory = '';
+            let title, creator = '', map = '', memory = '', comment = '';
             title = node.path.match(/[^/]*$/)[0];
             for (const line of data.split('\n')) {
                 if (line == '') { state++; continue;}
@@ -50,6 +50,7 @@ function selectStage(node) {
                 }
                 if (state == 1) map += line+'\n';
                 if (state == 2) memory += line+'\n';
+                if (state >= 3) comment += line+'\n';
             }
             let clearFunc = () => {
                 let solved = arrayToSet(getLS(SOLVED_KEY));
@@ -58,7 +59,7 @@ function selectStage(node) {
                 setLS(SOLVED_KEY, setToArray(solved));
                 updateSolved(node.path);
             };
-            setStage({title:title, creator:creator, map:map, memory:memory, clearFunc:clearFunc});
+            setStage({title:title, creator:creator, map:map, memory:memory, comment:comment, clearFunc:clearFunc});
             history.pushState('','',`?stage=${encodeURIComponent(node.path)}`);
         });
         return true;
