@@ -131,12 +131,16 @@ const movePlayer = (dy, dx) => {
     const newY = y + dy;
     const newX = x + dx;
 
-    if ((0 <= newY) && (newY < mapH) && (0 <= newX) && (newX < mapW) && ([Cell.EMPTY, Cell.GOLD].includes(map[newY][newX]))) {
+    if ((0 > newY) || (newY >= mapH) || (0 > newX) || (newX >= mapW)) return;
+
+    const cell = map[newY][newX];
+    const hasKey = existsKey(memory);
+    if (cell === Cell.EMPTY || cell === Cell.GOLD || (hasKey && cell === Cell.LOCK)) {
         const newMap = map.map(row => row.slice());
         const newMemory = memory.map(row => row.slice());
 
-        newMap[y][x] = Cell.EMPTY;
-        newMap[newY][newX] = Cell.PLAYER;
+        newMap[y][x] = (map[y][x] === Cell.PLAYER_ON_LOCK) ? Cell.LOCK : Cell.EMPTY;
+        newMap[newY][newX] = (cell === Cell.LOCK) ? Cell.PLAYER_ON_LOCK : Cell.PLAYER;
 
         updateState(newMap, newMemory);
     }
@@ -154,7 +158,7 @@ const swap = () => {
     if (mapSleepingPlayerPosition === null) {
         for (const [memoryY, row] of memory.entries()) {
             for (const [memoryX, cell] of row.entries()) {
-                if (cell !== Cell.NONE && cell !== Cell.PLAYER) {
+                if (isMemoryCell(cell)) {
                     const mapY = mapPlayerY + (memoryY - memoryPlayerY);
                     const mapX = mapPlayerX + (memoryX - memoryPlayerX);
 
