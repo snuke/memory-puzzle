@@ -87,9 +87,8 @@ function updateSolved(path) {
     while (node.parentTId !== null) {
         node = tree.getNodeByTId(node.parentTId);
         node.numSolved++;
-        node.name = node.name.split(' (')[0];
-        node.name += ` (${node.numSolved}/${node.numStage})`;
-        if (node.numStage == node.numSolved) {
+        node.name = node.baseName+` (${node.numSolved}/${node.numStage})`;
+        if (node.numStage === node.numSolved) {
             node.iconOpen = SOLVED_OPEN_ICON;
             node.iconClose = SOLVED_CLOSE_ICON;
         }
@@ -103,7 +102,7 @@ let setting = {
     },
     data: {
         key: {
-            title:"Stage Select"
+            title: 't'
         },
         simpleData: {
             enable: true
@@ -134,11 +133,12 @@ $.get('stages/index.txt', function(data) {
             if (id === void 0) {
                 id = title2id.size+1;
                 title2id.set(path, id);
-                zNodes.push({id:id, pId:pid, name:s, path:path});
+                zNodes.push({id:id, pId:pid, name:s, path:path, t: s});
             }
             pid = id; path += '/';
         }
         zNodes[pid-1]['score'] = score;
+        if (score) zNodes[pid-1]['t'] = `${score} pt`;
     }
     tree = $.fn.zTree.init($("#stage-select"), setting, zNodes);
     for (const node of tree.getNodes()) {
@@ -151,6 +151,7 @@ $.get('stages/index.txt', function(data) {
             for (const child of node.children) {
                 node.numStage += dfs(child);
             }
+            node.baseName = node.name;
             node.name += ` (0/${node.numStage})`;
             tree.updateNode(node);
             return node.numStage;
