@@ -52,7 +52,7 @@ function selectStage(node) {
                 if (state == 2) memory += line+'\n';
                 if (state >= 3) comment += line+'\n';
             }
-            let clearFunc = () => {
+            const clearFunc = () => {
                 let solved = arrayToSet(getLS(SOLVED_KEY));
                 if (solved.has(node.path)) return;
                 solved.add(node.path);

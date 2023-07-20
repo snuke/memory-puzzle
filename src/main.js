@@ -17,6 +17,7 @@ const setStage = (data) => {
     const score = data['score'] || 0;
     const solved = data['solved'] || false;
     clearFunc = data['clearFunc']; cleared = false;
+    initialData = data;
 
     document.getElementById('data-title').value = title;
     document.getElementById('data-creator').value = creator;
@@ -95,31 +96,15 @@ function updateTextarea() {
 
 const updateState = (newMap, newMemory) => {
     const [map, memory] = stateHistory[stateHistoryIndex];
-    let same = true;
-
-    for (const y of Array(mapH).keys()) {
-        for (const x of Array(mapW).keys()) {
-            if (map[y][x] !== newMap[y][x]) {
-                same = false;
-            }
-        }
-    }
-
-    for (const y of Array(memoryH).keys()) {
-        for (const x of Array(memoryW).keys()) {
-            if (memory[y][x] !== newMemory[y][x]) {
-                same = false;
-            }
-        }
-    }
-
-    if (same) {
+    if (isSame(map, newMap) && isSame(memory, newMemory)) {
         return;
     }
 
     stateHistory.length = stateHistoryIndex + 1;
     stateHistory.push([newMap, newMemory]);
     stateHistoryIndex++;
+
+    if (hookFunc) hookFunc();
 
     updateTextarea();
 };
@@ -134,7 +119,7 @@ const movePlayer = (dy, dx) => {
     if ((0 > newY) || (newY >= mapH) || (0 > newX) || (newX >= mapW)) return;
 
     const cell = map[newY][newX];
-    const hasKey = existsKey(memory);
+    const hasKey = memory.some(row => row.includes(Cell.KEY));
     if (cell === Cell.EMPTY || cell === Cell.GOLD || (hasKey && cell === Cell.LOCK)) {
         const newMap = map.map(row => row.slice());
         const newMemory = memory.map(row => row.slice());
@@ -237,7 +222,7 @@ const onAnimationFrame = () => {
     if (!map_has_goal && !memory_has_goal) {
         if (!cleared) {
             cleared = true;
-            if (clearFunc !== void 0) clearFunc();
+            if (clearFunc) clearFunc();
             document.getElementById('score').classList.remove('is-dark');
             document.getElementById('score').classList.add('is-success');
         }

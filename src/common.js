@@ -71,19 +71,8 @@ const canSwap = () => {
     return true;
 };
 
-const existsKey = (a) => {
-    for (const [y, row] of a.entries()) {
-        for (const [x, cell] of row.entries()) {
-            if (cell === Cell.KEY) {
-                return true;
-            }
-        }
-    }
-    return false;
-};
-
 const draw = (canvas, ctx, map, memory) => {
-    const hasKey = memory && existsKey(memory);
+    const hasKey = memory && memory.some(row => row.includes(Cell.KEY));
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#000000';
@@ -258,4 +247,15 @@ const draw = (canvas, ctx, map, memory) => {
             }
         }
     }
+}
+
+const isSame = (a, b) => {
+    for (const y of a.keys()) {
+        for (const x of a[y].keys()) {
+            if (a[y][x] !== b[y][x]) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
