@@ -23,11 +23,33 @@ function delLS(key) {
     localStorage.removeItem(key);
 }
 const SOLVED_KEY = 'solved';
-
+const ACHIEVEMENT_KEY = 'achievement';
 
 const SOLVED_FILE_ICON = 'src/img/diy/file2.png';
 const SOLVED_OPEN_ICON = 'src/img/diy/open2.png';
 const SOLVED_CLOSE_ICON = 'src/img/diy/close2.png';
+
+
+function addScore(pt) {
+    totalScore += pt;
+    $('#total-score span').text(totalScore);
+}
+
+const achieve = (key) => {
+    let achievement = arrayToSet(getLS(ACHIEVEMENT_KEY));
+    if (achievement.has(key)) return;
+    achievement.add(key);
+    setLS(ACHIEVEMENT_KEY, setToArray(achievement));
+    addScore(1);
+};
+const hookFuncs = {
+    'Dungeon Thief': () => {
+        const [map, memory] = stateHistory[stateHistoryIndex];
+        if (!memory.some(row => row.includes(Cell.GOLD))) return;
+        const [y, x] = getPlayerPosition(map);
+        if (y === mapH-1) achieve('Dungeon Thief');
+    }
+};
 
 
 let tree;
@@ -67,7 +89,8 @@ function selectStage(node) {
                 comment:comment,
                 score:node.score,
                 solved:node.solved,
-                clearFunc:clearFunc
+                clearFunc:clearFunc,
+                hookFunc:hookFuncs[node.name]
             };
             setStage(stageData);
             history.pushState('','',`?stage=${encodeURIComponent(node.path)}`);
@@ -80,8 +103,7 @@ function updateSolved(path) {
     if (node === null) return;
     if (node.solved) return;
     node.solved = true;
-    totalScore += node.score;
-    $('#total-score span').text(totalScore);
+    addScore(node.score);
     node.icon = SOLVED_FILE_ICON;
     tree.updateNode(node);
     while (node.parentTId !== null) {
@@ -91,6 +113,7 @@ function updateSolved(path) {
         if (node.numStage === node.numSolved) {
             node.iconOpen = SOLVED_OPEN_ICON;
             node.iconClose = SOLVED_CLOSE_ICON;
+            if (node.baseName === 'Bonus') addScore(5);
         }
         tree.updateNode(node);
     }
@@ -153,14 +176,19 @@ $.get('stages/index.txt', function(data) {
             }
             node.baseName = node.name;
             node.name += ` (0/${node.numStage})`;
+            if (node.baseName === 'Bonus') node.t = '5 pt';
             tree.updateNode(node);
             return node.numStage;
         }
         dfs(node);
     }
 
-    let solved = arrayToSet(getLS(SOLVED_KEY));
-    for (const path of solved) updateSolved(path);
+    {
+        const solved = arrayToSet(getLS(SOLVED_KEY));
+        for (const path of solved) updateSolved(path);
+        const achievements = getLS(ACHIEVEMENT_KEY);
+        if (achievements) addScore(achievements.length);
+    }
 
     const url = new URL(location.href);
     let stagePath = url.searchParams.get('stage');

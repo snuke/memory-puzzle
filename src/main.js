@@ -4,6 +4,7 @@ const ctx = canvas.getContext('2d');
 
 let title, creator, mapStr, memoryStr, comment;
 let clearFunc, cleared;
+let hookFunc;
 let initialData;
 let initialMap, mapH, mapW;
 let initialMemory, memoryH, memoryW;
@@ -17,6 +18,7 @@ const setStage = (data) => {
     const score = data['score'] || 0;
     const solved = data['solved'] || false;
     clearFunc = data['clearFunc']; cleared = false;
+    hookFunc = data['hookFunc'];
     initialData = data;
 
     document.getElementById('data-title').value = title;
@@ -189,11 +191,13 @@ canvas.addEventListener('keydown', (e) => {
     if (e.code === 'KeyZ') {
         if (stateHistoryIndex - 1 >= 0) {
             stateHistoryIndex--;
+            updateTextarea();
         }
     }
     if (e.code === 'KeyX') {
         if (stateHistoryIndex + 1 < stateHistory.length) {
             stateHistoryIndex++;
+            updateTextarea();
         }
     }
     if (e.code === 'KeyR') {
@@ -257,7 +261,7 @@ document.getElementById('apply').addEventListener('click', () => {
         'comment': comment,
     };
 
-    const url = new URL('/', location.href);
+    const url = new URL('./', location.href);
     url.searchParams.set('data', JSON.stringify(data));
     url.searchParams.set('edit', 'true');
     location.href = url.href;

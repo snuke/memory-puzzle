@@ -195,7 +195,7 @@ document.getElementById('play').addEventListener('click', () => {
         'memory': memoryStr,
         'comment': comment,
     };
-    const url = new URL('/', location.href);
+    const url = new URL('./', location.href);
     url.searchParams.set('data', JSON.stringify(data));
     open(url.href, '_blank');
 });

@@ -183,6 +183,14 @@ const draw = (canvas, ctx, map, memory) => {
                 ctx.lineTo((x + 13/32) * D, (y + 25/32) * D);
                 ctx.stroke();
             }
+
+            if (!Object.values(Cell).includes(cell)) {
+                ctx.fillStyle = '#fff';
+                ctx.font = '32px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(cell, (x + 1 / 2) * D, (y + 1 / 2) * D);
+            }
         }
     }
 
@@ -258,4 +266,33 @@ const isSame = (a, b) => {
         }
     }
     return true;
+}
+
+function transpose(a) {
+  let h = a.length, w = a[0].length;
+  if (w < h) {
+    for (var i = 0; i < w; i++) {
+      while (a[i].length < h) a[i].push('');
+    }
+    for (var i = 0; i < h; i++) {
+      for (var j = 0; j < w; j++) if (j < i) {
+        var tmp = a[i][j];
+        a[i][j] = a[j][i];
+        a[j][i] = tmp;
+      }
+    }
+    while (a.length > w) a.pop();
+  } else {
+    while (a.length < w) a.push(Array(h).fill(''));
+    for (var i = 0; i < h; i++) {
+      for (var j = 0; j < w; j++) if (j > i) {
+        var tmp = a[i][j];
+        a[i][j] = a[j][i];
+        a[j][i] = tmp;
+      }
+    }
+    for (var i = 0; i < h; i++) {
+      while (a[i].length > h) a[i].pop();
+    }
+  }
 }
